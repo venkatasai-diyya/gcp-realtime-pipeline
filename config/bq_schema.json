@@ -1,0 +1,9 @@
+[
+  { "name": "event_id",         "type": "STRING",    "mode": "REQUIRED", "description": "Unique event identifier (UUID)" },
+  { "name": "event_type",       "type": "STRING",    "mode": "REQUIRED", "description": "Event category (page_view, click, purchase, …)" },
+  { "name": "user_id",          "type": "STRING",    "mode": "NULLABLE", "description": "User identifier — nullable for anonymous sessions" },
+  { "name": "payload",          "type": "JSON",      "mode": "NULLABLE", "description": "All remaining event fields serialised to JSON" },
+  { "name": "processed_at",     "type": "TIMESTAMP", "mode": "REQUIRED", "description": "UTC timestamp when Dataflow processed this event" },
+  { "name": "ingest_date",      "type": "DATE",      "mode": "REQUIRED", "description": "Partition key — date derived from processed_at" },
+  { "name": "pipeline_version", "type": "STRING",    "mode": "REQUIRED", "description": "Pipeline release version for lineage tracking" }
+]
