@@ -7,7 +7,7 @@ SELECT
   TIMESTAMP_TRUNC(processed_at, HOUR) AS hour,
   event_type,
   COUNT(*)                             AS event_count
-FROM `your_project.events_streaming.events_raw`
+FROM `ai-ml-labs.events_streaming.events_raw`
 WHERE ingest_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY)
 GROUP BY 1, 2
 ORDER BY 1 DESC, 3 DESC;
@@ -17,7 +17,7 @@ ORDER BY 1 DESC, 3 DESC;
 SELECT
   ingest_date,
   COUNT(DISTINCT user_id) AS daily_active_users
-FROM `your_project.events_streaming.events_raw`
+FROM `ai-ml-labs.events_streaming.events_raw`
 WHERE ingest_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 7 DAY)
   AND user_id IS NOT NULL
 GROUP BY 1
@@ -29,7 +29,7 @@ SELECT
   ingest_date,
   COUNT(*)                                              AS purchase_count,
   ROUND(SUM(CAST(JSON_VALUE(payload, '$.amount_usd') AS FLOAT64)), 2) AS revenue_usd
-FROM `your_project.events_streaming.events_raw`
+FROM `ai-ml-labs.events_streaming.events_raw`
 WHERE ingest_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 30 DAY)
   AND event_type = 'purchase'
 GROUP BY 1
@@ -41,7 +41,7 @@ SELECT
   ingest_date,
   pipeline_version,
   COUNT(*) AS total_events
-FROM `your_project.events_streaming.events_raw`
+FROM `ai-ml-labs.events_streaming.events_raw`
 WHERE ingest_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 DAY)
 GROUP BY 1, 2
 ORDER BY 1 DESC;
@@ -51,7 +51,7 @@ ORDER BY 1 DESC;
 SELECT
   JSON_VALUE(payload, '$.error_code') AS error_code,
   COUNT(*)                             AS occurrences
-FROM `your_project.events_streaming.events_raw`
+FROM `ai-ml-labs.events_streaming.events_raw`
 WHERE event_type = 'error'
   AND ingest_date = CURRENT_DATE()
 GROUP BY 1

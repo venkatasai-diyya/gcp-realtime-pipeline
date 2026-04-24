@@ -10,12 +10,12 @@ from airflow.providers.google.cloud.operators.dataflow import DataflowStartFlexT
 from airflow.providers.google.cloud.sensors.bigquery import BigQueryTablePartitionExistenceSensor
 from airflow.providers.google.cloud.operators.bigquery import BigQueryCheckOperator
 
-PROJECT_ID  = "{{ var.value.gcp_project_id }}"
-REGION      = "{{ var.value.gcp_region }}"
-DATASET     = "{{ var.value.bq_dataset }}"
-TABLE       = "events_raw"
-SUBSCRIPTION = "projects/{{ var.value.gcp_project_id }}/subscriptions/events-sub"
-TEMPLATE_PATH = "gs://{{ var.value.gcp_project_id }}-templates/realtime-pipeline"
+PROJECT_ID   = "ai-ml-labs"
+REGION       = "us-central1"
+DATASET      = "events_streaming"
+TABLE        = "events_raw"
+SUBSCRIPTION = "projects/ai-ml-labs/subscriptions/events-sub"
+TEMPLATE_PATH = "gs://ai-ml-labs-templates/realtime-pipeline"
 
 default_args = {
     "owner": "data-engineering",
@@ -23,7 +23,7 @@ default_args = {
     "retries": 2,
     "retry_delay": timedelta(minutes=5),
     "email_on_failure": True,
-    "email": ["data-alerts@yourcompany.com"],
+    "email": ["venkatasaidiyya@gmail.com"],
 }
 
 with DAG(
@@ -31,7 +31,7 @@ with DAG(
     description="Launch and monitor the Pub/Sub → Dataflow → BigQuery streaming pipeline",
     default_args=default_args,
     start_date=datetime(2024, 1, 1),
-    schedule_interval="@daily",
+    schedule_interval="0 6 * * *",  # Daily at 6 AM UTC
     catchup=False,
     tags=["streaming", "dataflow", "bigquery"],
 ) as dag:
@@ -70,7 +70,7 @@ with DAG(
         task_id="data_quality_check",
         sql=f"""
             SELECT COUNT(*) > 0
-            FROM `{PROJECT_ID}.{DATASET}.{TABLE}`
+            FROM `ai-ml-labs.events_streaming.events_raw`
             WHERE ingest_date = '{{{{ ds }}}}'
               AND event_id IS NOT NULL
               AND event_type IS NOT NULL
